@@ -1,27 +1,42 @@
 let now = moment();
 
-const workDayTime = ["9:00", "10:00", "11:00", "12:00", "1:00", "2:00", "3:00", "4:00", "5:00"];
+const workDayTime = ["9 AM", "10 AM", "11 AM", "Noon", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM"];
+const timeValue = [09, 10, 11, 12, 13, 14, 15, 16, 17];
+
+console.log(now.hour());
 
 // Functionality to create and display schedule time blocks.
 function createSchedule () {
-    for (i = 0; i < workDayTime.length; i++) {
-        console.log(workDayTime[i]);
+    $.each(workDayTime, function(index, time) {
 
         // Creating rows for hour time blocks.
-        let timeBlock = document.createElement("section");
-        timeBlock.classList.add("row");
+        let timeBlock = $("<section>");
+        timeBlock.addClass("row");
         
-        // Hour section.
-        let hourBlock = document.createElement("div");
-        hourBlock.classList.add("hour", "col-2", "pt-2");
-        hourBlock.style.textAlign = "right";
-        hourBlock.textContent = workDayTime[i];
-        timeBlock.appendChild(hourBlock);
-        console.log(hourBlock);
+        // Hour Section
+        let hourBlock = $("<div>");
+        hourBlock.addClass("hour col-1");
+        hourBlock.css("text-align", "center");
+        hourBlock.css("padding-top", "31.5px");
+        hourBlock.text(time);
+        timeBlock.append(hourBlock);
 
-        document.querySelector(".container").appendChild(timeBlock);
-        console.log(timeBlock);
+        // Task Section
+        let taskBlock = $("<textarea>");
+        taskBlock.addClass("col-10");
+        taskBlock.attr("id", timeValue[index]);
+        console.log(parseInt(taskBlock[0].id));
+        timeBlock.append(taskBlock);
+
+        // Save Button
+        let saveButton = $("<button>");
+        saveButton.addClass("saveBtn fa fa-save col-1");
+        saveButton.css("font-size", "24px");
+        timeBlock.append(saveButton);
+
+        $(".container").append(timeBlock);
     }
+    )
 }
 
 createSchedule ();
