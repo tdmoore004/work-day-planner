@@ -32,31 +32,70 @@ function createSchedule() {
         // Save Button
         saveButton = $("<button>");
         saveButton.addClass("saveBtn fa fa-save col-2 col-lg-1");
+        saveButton.attr("id", timeValue[index]);
         saveButton.css("font-size", "24px");
         timeBlock.append(saveButton);
 
         $(".container").append(timeBlock);
-    }
-    )
-}
+    });
+};
 
 // Look at the time and format time blocks accordingly.
 function stylePastPresentFuture() {
+
+    // Initial styling of task blocks
     $.each(workDayTime, function (index, time) {
         taskBlock = $("#" + timeValue[index]);
 
         // Style for the past
         if ((parseInt(taskBlock[0].id) < now.hour())) {
             taskBlock.addClass("past");
+
+            // Style for present
         } else if ((parseInt(taskBlock[0].id) === now.hour())) {
             taskBlock.addClass("present");
+
+            // Style for future
         } else {
             taskBlock.addClass("future");
         };
+    });
+
+    // Restyle if time changes
+    setInterval(function () {
+        $.each(workDayTime, function (index, time) {
+            taskBlock = $("#" + timeValue[index]);
+
+            // Style for the past
+            if ((parseInt(taskBlock[0].id) < now.hour())) {
+                taskBlock.addClass("past");
+
+                // Style for present
+            } else if ((parseInt(taskBlock[0].id) === now.hour())) {
+                taskBlock.addClass("present");
+
+                // Style for future
+            } else {
+                taskBlock.addClass("future");
+            };
+        })
+    }, 1000);
+};
+
+// Display saved tasks to task blocks.
+function displayTasks() {
+    $.each(workDayTime, function (index, time) {
+        taskBlock = $("#" + timeValue[index]);
+        taskBlock.text(localStorage.getItem("taskEntry" + timeValue[index]));
     })
-}
+};
 
 // Save task entries to local storage.
+function saveTasks(event) {
+    localStorage.setItem("taskEntry" + event.currentTarget.id, event.currentTarget.previousSibling.value);
+};
 
 createSchedule();
 stylePastPresentFuture();
+displayTasks();
+$(".saveBtn").click(saveTasks);
