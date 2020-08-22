@@ -1,11 +1,17 @@
 let now = moment();
+let currentDate = $("#currentDay");
 
 const workDayTime = ["9 AM", "10 AM", "11 AM", "Noon", "1 PM", "2 PM", "3 PM", "4 PM", "5 PM"];
 const timeValue = [09, 10, 11, 12, 13, 14, 15, 16, 17];
-let timeBlock = $("<section>");
-let hourBlock = $("<div>");
-let taskBlock = $("<textarea>");
-let saveButton = $("<button>");
+let timeBlock;
+let hourBlock;
+let taskBlock;
+let saveButton;
+
+// Display current date.
+function displayCurrentDate() {
+    currentDate.text(now.format("dddd, MMMM Do, YYYY"));
+};
 
 // Create and display schedule time blocks.
 function createSchedule() {
@@ -41,7 +47,7 @@ function createSchedule() {
 };
 
 // Look at the time and format time blocks accordingly.
-function stylePastPresentFuture() {
+function styleSchedule() {
 
     // Initial styling of task blocks
     $.each(workDayTime, function (index, time) {
@@ -60,26 +66,6 @@ function stylePastPresentFuture() {
             taskBlock.addClass("future");
         };
     });
-
-    // Restyle if time changes
-    setInterval(function () {
-        $.each(workDayTime, function (index, time) {
-            taskBlock = $("#" + timeValue[index]);
-
-            // Style for the past
-            if ((parseInt(taskBlock[0].id) < now.hour())) {
-                taskBlock.addClass("past");
-
-                // Style for present
-            } else if ((parseInt(taskBlock[0].id) === now.hour())) {
-                taskBlock.addClass("present");
-
-                // Style for future
-            } else {
-                taskBlock.addClass("future");
-            };
-        })
-    }, 1000);
 };
 
 // Display saved tasks to task blocks.
@@ -95,7 +81,8 @@ function saveTasks(event) {
     localStorage.setItem("taskEntry" + event.currentTarget.id, event.currentTarget.previousSibling.value);
 };
 
+displayCurrentDate();
 createSchedule();
-stylePastPresentFuture();
+styleSchedule();
 displayTasks();
 $(".saveBtn").click(saveTasks);
