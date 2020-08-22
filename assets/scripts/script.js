@@ -8,19 +8,17 @@ let hourBlock;
 let taskBlock;
 let saveButton;
 
-// Display current date.
 function displayCurrentDate() {
-    currentDate.text(now.format("dddd, MMMM Do, YYYY"));
 };
 
 // Create and display schedule time blocks.
 function createSchedule() {
     $.each(workDayTime, function (index, time) {
-
+        
         // Creating rows for hour time blocks.
         timeBlock = $("<section>");
         timeBlock.addClass("row");
-
+        
         // Hour Section
         hourBlock = $("<div>");
         hourBlock.addClass("hour col-2 col-lg-1");
@@ -28,29 +26,33 @@ function createSchedule() {
         hourBlock.css("padding-top", "31.5px");
         hourBlock.text(time);
         timeBlock.append(hourBlock);
-
+        
         // Task Section
         taskBlock = $("<textarea>");
         taskBlock.addClass("col-8 col-lg-10");
         taskBlock.attr("id", timeValue[index]);
         timeBlock.append(taskBlock);
-
+        
         // Save Button
         saveButton = $("<button>");
         saveButton.addClass("saveBtn fa fa-save col-2 col-lg-1");
         saveButton.attr("id", timeValue[index]);
+        saveButton.attr("type", "submit");
         saveButton.css("font-size", "24px");
         timeBlock.append(saveButton);
-
+        
         $(".container").append(timeBlock);
     });
 };
 
-// Look at the time and format time blocks accordingly.
+// Display current date, style schedule based on current time and display any saved tasks.
 function styleSchedule() {
 
+    // Display current date.
+    currentDate.text(now.format("dddd, MMMM Do, YYYY"));
+
     // Initial styling of task blocks
-    $.each(workDayTime, function (index, time) {
+    $.each(timeValue, function (index, time) {
         taskBlock = $("#" + timeValue[index]);
 
         // Style for the past
@@ -65,24 +67,19 @@ function styleSchedule() {
         } else {
             taskBlock.addClass("future");
         };
-    });
-};
 
-// Display saved tasks to task blocks.
-function displayTasks() {
-    $.each(workDayTime, function (index, time) {
+        // Display saved tasks to schedule
         taskBlock = $("#" + timeValue[index]);
         taskBlock.text(localStorage.getItem("taskEntry" + timeValue[index]));
-    })
+    });
 };
 
 // Save task entries to local storage.
 function saveTasks(event) {
+    event.preventDefault();
     localStorage.setItem("taskEntry" + event.currentTarget.id, event.currentTarget.previousSibling.value);
 };
 
-displayCurrentDate();
 createSchedule();
 styleSchedule();
-displayTasks();
 $(".saveBtn").click(saveTasks);
